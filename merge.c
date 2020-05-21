@@ -26,10 +26,10 @@ bool validate(string line)
 
 
 // Checking whether user's input is an integer or not
-unsigned int readInt()
+unsigned int readInt(bool is_negative)
 {
     char num[12];
-    unsigned long long temp = 0; // used to test if the value is less than 4294967296
+    unsigned long long temp = 0; // used to test if abstract of the value is less than or equal with 2,147,483,648
 
 
     while (true)
@@ -39,7 +39,13 @@ unsigned int readInt()
 
         fgets(num, 12, stdin);
         //check if the input is a number without other characters
-        for (unsigned int i = 0; i < _mbstrlen(num) - 1; i++)
+
+        unsigned int i;
+        if (!is_negative)
+            i = 0;
+        else
+            i = 1;
+        for (i; i < _mbstrlen(num) - 1; i++)
         {
             if (num[i] < 48 || num[i] > 57)
             {
@@ -50,24 +56,40 @@ unsigned int readInt()
 
 
         //check for negative value
-        if (num[0] == '-')
+        if (!is_negative && num[0] == '-')
         {
             printf("!!!Please enter a positive number. Please try again!\n");
             continue;
         }
 
-        //check if the value is less than 4294967296
-        int power = 0;
-        for (int i = _mbstrlen(num) - 2; i > -1; i--)
+        //check if abstract of the value is less than 2,147,483,648
+        int power = 0, threshold;
+
+        if (num[0] == '-')
+            threshold = 0;
+        else
+            threshold = -1;
+
+        
+        for (int i = _mbstrlen(num) - 2; i > threshold; i--)
         {
             int digit = num[i] - '0';
-            temp = temp + digit * (unsigned long)pow(10, power++);
+            if (digit == 0 && i > 0)
+            {
+                power++;
+                temp = temp + digit * (unsigned long)pow(10, power++);
+            }
+            else
+                temp = temp + digit * (unsigned long)pow(10, power++);
         }
-            
+        
+        
+        
+        
       
-        if (temp > 4294967295)
+        if (temp > 2147483648)
         {
-            printf("!!!Please enter a positive number less than 4294967296. Please try again\n");
+            printf("!!!Please enter a positive number less than 2147483648. Please try again\n");
             continue;
         }
 
@@ -75,6 +97,9 @@ unsigned int readInt()
         break;
     }
     
+    if (num[0] == '-')
+        temp *= -1;
+
     return (int)temp;
 }
 
@@ -87,25 +112,25 @@ int main() {
     printf("Please enter only positive numbers\nPlease note that your number should be up to 10 digits and less than or equal with 4294967295\n");
 
     printf("Enter size of the first array: \n");
-    int n = readInt(); //size of the first array
+    int n = readInt(false); //size of the first array
     
     int* FirstArray = (int*)malloc(sizeof(int) * n);
     printf("\n\nEnter the first array's elemenct one by one: \n");
     for (int i = 0; i < n; i++)
     {
         printf("Enter element %d of the first array: ", (i + 1));
-        FirstArray[i] = readInt();
+        FirstArray[i] = readInt(true);
     }
         
     printf("\n=====================================================\n\n");
     printf("Enter size of the second array: \n");
-    int m = readInt(); //size of the second array
+    int m = readInt(false); //size of the second array
     int* SecondArray = (int*)malloc(sizeof(int) * m);
 
     for (int i = 0; i < m; i++)
     {
         printf("Enter element %d of the second array: ", (i + 1));
-        SecondArray[i] = readInt();
+        SecondArray[i] = readInt(true);
     }
     
     int* OutputArray = (int*)malloc(sizeof(int) * (m + n));
