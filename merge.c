@@ -91,7 +91,7 @@ unsigned int readInt(bool is_negative)
                     power++;
                     digit = num[i - 1] - '0';
                     temp = temp + digit * (unsigned long)pow(10, power++);
-                    i = i - 2;
+                    i = i - 1;
                 }
                 else
                     temp = temp + digit * (unsigned long)pow(10, power++);
