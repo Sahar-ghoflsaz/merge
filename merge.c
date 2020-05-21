@@ -66,27 +66,39 @@ unsigned int readInt(bool is_negative)
         int power = 0, threshold;
 
         if (num[0] == '-')
-            threshold = 0;
+        {
+            for (int i = _mbstrlen(num) - 2; i > 0; i--)
+            {
+                int digit = num[i] - '0';
+                if (digit == 0 && i > 1)
+                {
+                    power++;
+                    digit = num[i - 1] - '0';
+                    temp = temp + digit * (unsigned long)pow(10, power++);
+                    i = i - 2;
+                }
+                else
+                    temp = temp + digit * (unsigned long)pow(10, power++);
+            }
+        }
         else
-            threshold = -1;
+        {
+            for (int i = _mbstrlen(num) - 2; i > -1; i--)
+            {
+                int digit = num[i] - '0';
+                if (digit == 0 && i > 0)
+                {
+                    power++;
+                    digit = num[i - 1] - '0';
+                    temp = temp + digit * (unsigned long)pow(10, power++);
+                    i = i - 2;
+                }
+                else
+                    temp = temp + digit * (unsigned long)pow(10, power++);
+            }
+        }
 
         
-        for (int i = _mbstrlen(num) - 2; i > threshold; i--)
-        {
-            int digit = num[i] - '0';
-            if (digit == 0 && i > 0)
-            {
-                power++;
-                temp = temp + digit * (unsigned long)pow(10, power++);
-            }
-            else
-                temp = temp + digit * (unsigned long)pow(10, power++);
-        }
-        
-        
-        
-        
-      
         if (temp > 2147483648)
         {
             printf("!!!Please enter a positive number less than 2147483648. Please try again\n");
@@ -109,7 +121,7 @@ unsigned int readInt(bool is_negative)
 int main() {
 
 
-    printf("Please enter only positive numbers\nPlease note that your number should be up to 10 digits and less than or equal with 4294967295\n");
+    printf("Please enter only positive numbers\nPlease note that your number should be up to 10 digits and less than or equal with 2147483648\n");
 
     printf("Enter size of the first array: \n");
     int n = readInt(false); //size of the first array
